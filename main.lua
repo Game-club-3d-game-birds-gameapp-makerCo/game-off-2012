@@ -2,11 +2,18 @@ function love.load()
     player = { -- nice and organised.
         x = 0,
         y = 0,
-        image = love.graphics.newImage("hamster.png") -- let's just re-use this sprite.
+        y_velocity = 0,
+        jetpack_fuel = 0.5, -- note: not an actual jetpack. variable is the time (in seconds)
+        -- you can hold spacebar and jump higher.
+        jetpack_fuel_max = 0.5,
+        image = love.graphics.newImage("hamster.png"), -- let's just re-use this sprite.
     }
 
     winW, winH = love.graphics.getWidth(), love.graphics.getHeight() -- this is just
     -- so we can draw it in a fabulous manner.
+
+    gravity = 400
+    jump_height = 300
 end
 
 function love.draw()
@@ -16,3 +23,29 @@ function love.draw()
     love.graphics.draw(player.image, player.x, -player.y, 0, 1, 1, 64, 103) -- trust me
     -- on the origin position. just trust me.
 end
+
+function love.update(dt)
+    if player.jetpack_fuel > 0 -- we can still move upwards
+    and love.keyboard.isDown(" ") then -- and we're actually holding space
+        player.jetpack_fuel = player.jetpack_fuel - dt -- decrease the fuel meter
+        player.y_velocity = player.y_velocity + jump_height * (dt / player.jetpack_fuel_max)
+    end
+    if player.y_velocity ~= 0 then -- we're probably jumping
+        player.y = player.y + player.y_velocity * dt -- dt means we wont move at
+        -- different speeds if the game lags
+        player.y_velocity = player.y_velocity - gravity * dt
+        if player.y < 0 then -- we hit the ground again
+            player.y_velocity = 0
+            player.y = 0
+            player.jetpack_fuel = player.jetpack_fuel_max
+        end
+    end
+end
+
+-- function love.keypressed(key)
+--     if key == " " then
+--         if player.y_velocity == 0 then -- we're probably on the ground, let's jump
+--             player.y_velocity = jump_height
+--         end
+--     end
+-- end
