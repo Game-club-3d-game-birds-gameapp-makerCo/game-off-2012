@@ -2,6 +2,7 @@ function love.load()
     player = { -- nice and organised.
         x = 0,
         y = 0,
+        x_velocity = 32,
         y_velocity = 0,
         jetpack_fuel = 0.5, -- note: not an actual jetpack. variable is the time (in seconds)
         -- you can hold spacebar and jump higher.
@@ -39,6 +40,12 @@ function love.update(dt)
             player.y = 0
             player.jetpack_fuel = player.jetpack_fuel_max
         end
+    end
+    if love.keyboard.isDown("right") then
+        player.x = player.x + (player.x_velocity * dt * 2)
+    end
+    if love.keyboard.isDown("left") then
+        player.x = player.x - (player.x_velocity * dt * 2)
     end
 end
 
