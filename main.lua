@@ -1,4 +1,13 @@
 function love.load()
+
+    versionstring = "version 0.0"
+
+    -- Graphics settings
+
+    love.graphics.setBackgroundColor(0, 0, 0)
+    love.graphics.setCaption( "The Door Into Summer" )
+
+
     player = { -- nice and organised.
         x = 0,
         y = 0,
