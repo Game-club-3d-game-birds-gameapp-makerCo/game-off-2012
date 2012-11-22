@@ -6,6 +6,7 @@ min_speed = 0.7 -- Simulates static friction. If your speed falls below this you
 max_walk_speed = 6.4
 friction = 14
 friction_air = 0
+speed_limiting_friction = friction * 2 -- Friction to apply when trying to move faster than max_walk_speed
 air_control_multiplier = 0.8 -- How much acceleration to apply when trying to move backward mid air
 
 gravity = 80
