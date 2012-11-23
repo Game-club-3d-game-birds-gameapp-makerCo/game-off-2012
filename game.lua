@@ -12,6 +12,10 @@ function game:keypressed(key, code)
     player:keypressed(key, code)
 end
 
+function game:keyreleased(key, code)
+    player:keyreleased(key, code)
+end
+
 function game:draw()
     love.graphics.rectangle("fill", 0, window_size.x / 2, window_size.x, window_size.y / 2)
     love.graphics.translate(window_size.x / 2, window_size.y / 2) -- you don't need to understand this

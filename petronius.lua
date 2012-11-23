@@ -13,6 +13,7 @@ Petronius = Class { function( self, pos, facing)
 
 	self.facing = facing or "right"
 	self.animation = "idle"
+    self.inputs = {}
 
 end }
 
@@ -61,9 +62,22 @@ function Petronius:update(dt)
     end
 end
 
-function Petronius:keypressed(key, code)
-	-- I wish we could just put all the input handlers in here, that would make a lot more sense
+function Petronius:keypressed(key)
+    if key == "escape" then
+        love.event.push("quit") -- This doesn't seem to work
+    end
+    -- Input logging is done here. See Petronius:update for the resulting actions
+    local timestamp = love.timer.getMicroTime()
+    self.inputs[timestamp] = { ["key"]=key, ["press"]=true }
+    print(timestamp.." "..self.inputs[timestamp]["key"].." Pressed")
 end
+
+function Petronius:keyreleased(key)
+    local timestamp = love.timer.getMicroTime()
+    self.inputs[timestamp] = { ["key"]=key, ["press"]=false }
+    print(timestamp.." "..self.inputs[timestamp]["key"].." Released")
+end
+
 
 function Petronius:draw()
 	love.graphics.draw(Petronius.img, self.pos.x, -self.pos.y)
