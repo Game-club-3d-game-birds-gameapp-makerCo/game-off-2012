@@ -1,11 +1,27 @@
+require "world_properties"
+
+-- Game state system
+
+Gamestate = require "libraries.hump.gamestate"
+
+main_menu = Gamestate.new()
+require "menus"
+
+game = Gamestate.new()
+require "game"
+
 function love.load()
+
+    love.graphics.setCaption( "The Door Into Summer" )
+
+    Gamestate.registerEvents()
+    Gamestate.switch(main_menu)
 
     versionstring = "version 0.0"
 
     -- Graphics settings
 
     love.graphics.setBackgroundColor(0, 0, 0)
-    love.graphics.setCaption( "The Door Into Summer" )
 
 
     player = { -- nice and organised.
@@ -24,44 +40,6 @@ function love.load()
 
     gravity = 400
     jump_height = 300
+
+
 end
-
-function love.draw()
-    love.graphics.rectangle("fill", 0, winH / 2, winW, winH / 2)
-    love.graphics.translate(winW / 2, winH / 2) -- you don't need to understand this
-
-    love.graphics.draw(player.image, player.x, -player.y, 0, 1, 1, 64, 103) -- trust me
-    -- on the origin position. just trust me.
-end
-
-function love.update(dt)
-    if player.jetpack_fuel > 0 -- we can still move upwards
-    and love.keyboard.isDown(" ") then -- and we're actually holding space
-        player.jetpack_fuel = player.jetpack_fuel - dt -- decrease the fuel meter
-        player.y_velocity = player.y_velocity + jump_height * (dt / player.jetpack_fuel_max)
-    end
-    if player.y_velocity ~= 0 then -- we're probably jumping
-        player.y = player.y + player.y_velocity * dt -- dt means we wont move at
-        -- different speeds if the game lags
-        player.y_velocity = player.y_velocity - gravity * dt
-        if player.y < 0 then -- we hit the ground again
-            player.y_velocity = 0
-            player.y = 0
-            player.jetpack_fuel = player.jetpack_fuel_max
-        end
-    end
-    if love.keyboard.isDown("right") then
-        player.x = player.x + (player.x_velocity * dt * 2)
-    end
-    if love.keyboard.isDown("left") then
-        player.x = player.x - (player.x_velocity * dt * 2)
-    end
-end
-
--- function love.keypressed(key)
---     if key == " " then
---         if player.y_velocity == 0 then -- we're probably on the ground, let's jump
---             player.y_velocity = jump_height
---         end
---     end
--- end

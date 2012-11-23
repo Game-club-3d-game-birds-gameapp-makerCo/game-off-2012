@@ -4,7 +4,8 @@ petronius = class:new()
 
 function petronius:init(x, y, is_player)
 
-	-- Helper variables
+	-- Physical attributes
+
 	walk_acceleration = 8
 	walk_acceleration_air = 8
 	stopping_speed = 0.7 -- Simulates static friction. If your speed falls below this you'll stop rather than continuing to slide really slowly
@@ -15,21 +16,23 @@ function petronius:init(x, y, is_player)
 	air_control_multiplier = 0.8 -- How much acceleration to apply when trying to move backward mid air
 	jumping_gravity = 30 -- Weaker than actual gravity so jumping feels less like a jetpack
 	jump_force = 16
+	self.width, self.height = 64, 64 --pixels
+	self.x, self.y = x, y+1-self.height
 
-	-- Physical attributes
-	self.speedx = 0
-	self.speedy = 0
-	self.x = x
-	self.width = 12/16
-	self.height = 12/16
-	self.y = y+1-self.height
-	is_player = is_player or false
+	-- State attributes
+
+	self.velocity_x = 0
+	self.velocity_y = 0
 	is_jumping = false
 
 	-- Visual attributes
 
 	self.facing = "right"
 	self.animation = "idle"
+
+	-- Metaphysical attributes
+
+	is_player = is_player or false
 
 end
 
