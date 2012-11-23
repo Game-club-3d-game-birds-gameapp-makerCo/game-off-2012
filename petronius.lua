@@ -1,23 +1,8 @@
-require "class"
-
-petronius = class:new()
-
-function petronius:init(x, y, is_player)
+Petronius = Class { function( self, pos, facing)
 
 	-- Physical attributes
 
-	walk_acceleration = 8
-	walk_acceleration_air = 8
-	stopping_speed = 0.7 -- Simulates static friction. If your speed falls below this you'll stop rather than continuing to slide really slowly
-	max_walk_speed = 6.4
-	friction = 14
-	friction_air = 0
-	speed_limiting_friction = friction * 2 -- Friction to apply when trying to move faster than max_walk_speed
-	air_control_multiplier = 0.8 -- How much acceleration to apply when trying to move backward mid air
-	jumping_gravity = 30 -- Weaker than actual gravity so jumping feels less like a jetpack
-	jump_force = 16
-	self.width, self.height = 64, 64 --pixels
-	self.x, self.y = x, y+1-self.height
+	self.pos = pos
 
 	-- State attributes
 
@@ -27,15 +12,28 @@ function petronius:init(x, y, is_player)
 
 	-- Visual attributes
 
-	self.facing = "right"
+	self.facing = facing or "right"
 	self.animation = "idle"
 
-	-- Metaphysical attributes
+end }
 
-	is_player = is_player or false
+Petronius.walk_acceleration = 8
+Petronius.walk_acceleration_air = 8
+Petronius.stopping_speed = 0.7 -- Simulates static friction. If your speed falls below this you'll stop rather than continuing to slide really slowly
+Petronius.max_walk_speed = 6.4
+Petronius.friction = 14
+Petronius.friction_air = 0
+Petronius.speed_limiting_friction = Petronius.friction * 2 -- Friction to apply when trying to move faster than max_walk_speed
+Petronius.air_control_multiplier = 0.8 -- How much acceleration to apply when trying to move backward mid air
+Petronius.jumping_gravity = 30 -- Weaker than actual gravity so jumping feels less like a jetpack
+Petronius.jump_force = 16
+Petronius.width, Petronius.height = 64, 64 --pixels
+Petronius.img = love.graphics.newImage("hamster.png")
 
+function Petronius:update(dt)
+	
 end
 
-function petronius:update(dt)
-	
+function Petronius:draw()
+	love.graphics.draw(Petronius.img, self.pos.x, -self.pos.y, 0, 1, 1, 64, 103) --Origin is specific to the hamster ball graphic and will be diferent later
 end

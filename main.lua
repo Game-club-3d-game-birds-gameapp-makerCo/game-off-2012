@@ -10,6 +10,14 @@ require "menus"
 game = Gamestate.new()
 require "game"
 
+-- Classes
+
+Class = require "libraries.hump.class"
+
+-- Entities
+
+require "petronius"
+
 function love.load()
 
     love.graphics.setCaption( "The Door Into Summer" )
