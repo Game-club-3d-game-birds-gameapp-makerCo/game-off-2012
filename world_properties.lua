@@ -1,4 +1,4 @@
 --EVERYTHING IS A GLOBAL WAT
 
 gravity = 80
-blah = "test"
+spawn_point = vector(0,0)
