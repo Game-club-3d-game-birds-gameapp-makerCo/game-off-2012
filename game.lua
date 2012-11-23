@@ -1,4 +1,9 @@
+love.filesystem.load("libraries/map_loader.lua")()
+
 function game:enter()
+    gCamX,gCamY = 100,100
+    TiledMap_Load("map/map01.tmx")
+
     player = Petronius(spawn_point)
 
     window_size = vector( love.graphics.getWidth(), love.graphics.getHeight() )
@@ -6,6 +11,8 @@ end
 
 function game:update(dt)
     player:update(dt)
+
+    gCamX = player.pos.x
 end
 
 function game:keypressed(key, code)
@@ -20,6 +27,7 @@ end
 function game:draw()
     love.graphics.push()
         love.graphics.scale(pixel_scale,pixel_scale) -- Pixels!
+        TiledMap_DrawNearCam(gCamX, gCamY)
         player:draw()
         love.graphics.pop()
     love.graphics.rectangle("fill", 0, window_size.y / 2, window_size.x, window_size.y / 2)
