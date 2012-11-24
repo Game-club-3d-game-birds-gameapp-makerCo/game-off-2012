@@ -1,30 +1,33 @@
-Petronius = Class { function( self, pos, facing)
+Petronius = Class { function( self, spawn_point, is_facing_right)
 
 	-- Physical attributes
 
-	self.pos = pos
+	self.pos = spawn_point
 
 	-- State attributes
 
 	self.velocity = vector(0,0)
-	is_jumping = false
+	self.is_jumping = false
+    self.is_walking = false
+    self.is_facing_right = is_facing_right or true -- It blows my mind that this might not be a tautology
 
 	-- Visual attributes
 
-	self.facing = facing or "right"
 	self.animation = "idle"
+
+    -- Metaphyiscal attributes
     self.inputs = {}
 
 end }
 
 Petronius.walk_acceleration = 800
 Petronius.walk_acceleration_air = 8
-Petronius.max_walk_speed = 6.4
+Petronius.max_walk_speed = 400
 
 Petronius.stopping_speed = 20 -- Simulates static friction. If your speed falls below this you'll stop rather than continuing to slide really slowly
 Petronius.friction = 0.9
-Petronius.friction_air = 0
-Petronius.speed_limiting_friction = Petronius.friction * 2 -- Friction to apply when trying to move faster than max_walk_speed
+Petronius.friction_air = 0.4
+--Petronius.speed_limiting_friction = Petronius.friction * 2 -- Friction to apply when trying to move faster than max_walk_speed
 
 Petronius.air_control_multiplier = 0.8 -- How much acceleration to apply when trying to move backward mid air
 Petronius.jumping_gravity = 30 -- Weaker than actual gravity so jumping feels less like a jetpack
@@ -34,30 +37,43 @@ Petronius.size = vector(64,64) --pixels
 
 Petronius.img = love.graphics.newImage("hamster.png")
 
-local walking
-
 function Petronius:update(dt)
+
+    -- Count as walking when the player is holding left or right. Change position based on current velocity and update velocity accordingly
+
     if love.keyboard.isDown("right") then
-    	walking = true
+    	self.is_walking = true
     	self.velocity.x = self.velocity.x + self.walk_acceleration * dt
     	self.pos.x = self.pos.x + self.velocity.x * dt
     elseif love.keyboard.isDown("left") then
-    	walking = true
+    	self.is_walking = true
         self.velocity.x = self.velocity.x - self.walk_acceleration * dt -- There *has* to be a more idiomatic way to write this
     	self.pos.x = self.pos.x + self.velocity.x * dt
     else
-    	walking = false
+    	self.is_walking = false
     end
 
-    if not walking then 
+    -- Update direction based on velocity, but only if we're walking
+    -- NOTE: This makes the assumption of there being no moving platforms
+
+    if self.is_walking then
+        self.is_facing_right = self.velocity.x > 0
+    end
+
+    -- Slow the movement speed when we're not walking
+
+    if not self.is_walking then 
     	self.velocity.x = self.velocity.x * Petronius.friction
     end
 
-    --if math.abs(self.velocity.x) > Petronius.max_walk_speed then self.velocity.x = (self.velocity.x / self.velocity.x) * Petronius.max_walk_speed end
+    -- Cap the walking speed in either direction
+
+    if self.velocity.x > Petronius.max_walk_speed then self.velocity.x = Petronius.max_walk_speed end
+    if self.velocity.x < (0 - Petronius.max_walk_speed) then self.velocity.x = (0 - Petronius.max_walk_speed) end
 
     if math.abs(self.velocity.x) > Petronius.stopping_speed then
     	self.pos.x = self.pos.x + self.velocity.x * dt
-    elseif not walking then
+    elseif not self.is_walking then
     	self.velocity.x = 0
     end
 end
@@ -66,15 +82,18 @@ function Petronius:keypressed(key)
     if key == "escape" then
         love.event.push("quit") -- This doesn't seem to work
     end
+
     -- Input logging is done here. See Petronius:update for the resulting actions
     local timestamp = love.timer.getMicroTime()
     self.inputs[timestamp] = { ["key"]=key, ["press"]=true }
+
     print(timestamp.." "..self.inputs[timestamp]["key"].." Pressed")
 end
 
 function Petronius:keyreleased(key)
     local timestamp = love.timer.getMicroTime()
     self.inputs[timestamp] = { ["key"]=key, ["press"]=false }
+
     print(timestamp.." "..self.inputs[timestamp]["key"].." Released")
 end
 
