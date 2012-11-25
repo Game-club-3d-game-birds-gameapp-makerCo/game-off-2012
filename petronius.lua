@@ -23,7 +23,7 @@ end }
 
 Petronius.walk_acceleration = 800
 Petronius.walk_acceleration_air = 8
-Petronius.max_walk_speed = 400
+Petronius.max_walk_speed = 200
 
 Petronius.stopping_speed = 20 -- Simulates static friction. If your speed falls below this you'll stop rather than continuing to slide really slowly
 Petronius.friction = 0.9
@@ -40,8 +40,9 @@ Petronius.sprite_sheet = love.graphics.newImage("graphics/petronius/sprite sheet
 Petronius.sprite_sheet:setFilter("nearest", "nearest")
 
 Petronius.animations = { 
-    [ "idle" ] = newAnimation(Petronius.sprite_sheet, Petronius.size.x, Petronius.size.y, 0, 1) ,
-    [ "walking" ] = newAnimation(Petronius.sprite_sheet, Petronius.size.x, Petronius.size.y, 0.25, 2) ,
+    [ "idle" ] = newAnimation(Petronius.sprite_sheet, Petronius.size.x, Petronius.size.y, 0, 1, 0, 1) ,
+    [ "walking" ] = newAnimation(Petronius.sprite_sheet, Petronius.size.x, Petronius.size.y, 0.25, 2, 0) ,
+    [ "ball" ] = newAnimation(Petronius.sprite_sheet, Petronius.size.x, Petronius.size.y, 0.1, 10, 1) ,
 }
 
 function Petronius:update(dt)
@@ -87,6 +88,12 @@ function Petronius:update(dt)
     -- Update animations
 
     self.current_animation = self.movement_state
+
+    -- Add ball animation on down key, just for fun right now
+
+    if love.keyboard.isDown("down") then self.current_animation = "ball" end
+    
+    Petronius.animations[self.current_animation]:setSpeed(math.max(0.75, 4 * math.abs(self.velocity.x) / Petronius.max_walk_speed))
     Petronius.animations[self.current_animation]:update(dt)
 end
 

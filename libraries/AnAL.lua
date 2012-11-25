@@ -33,8 +33,10 @@ animation.__index = animation
 -- @param fh The frame height
 -- @param delay The delay between two frames
 -- @param frames The number of frames, 0 for autodetect
+-- @param row Only use frames from this row of the sprite sheet
+-- @param skip Skip this many cells from the left
 -- @return The created animation
-function newAnimation(image, fw, fh, delay, frames)
+function newAnimation(image, fw, fh, delay, frames, row, skip)
 	local a = {}
 	a.img = image
 	a.frames = {}
@@ -47,15 +49,15 @@ function newAnimation(image, fw, fh, delay, frames)
 	a.speed = 1
 	a.mode = 1
 	a.direction = 1
+	local row = row or 0
+	local skip = skip or 0
 	local imgw = image:getWidth()
 	local imgh = image:getHeight()
 	if frames == 0 then
 		frames = imgw / fw * imgh / fh
 	end
-	local rowsize = imgw/fw
 	for i = 1, frames do
-		local row = math.floor((i-1)/rowsize)
-		local column = (i-1)%rowsize
+		local column = (i-1) + skip
 		local frame = love.graphics.newQuad(column*fw, row*fh, fw, fh, imgw, imgh)
 		table.insert(a.frames, frame)
 		table.insert(a.delays, delay)
