@@ -1,7 +1,7 @@
 love.filesystem.load("libraries/map_loader.lua")()
 
 function game:enter()
-    gCamX,gCamY = 100,100
+    gCamX,gCamY = love.graphics.getWidth()/2,love.graphics.getHeight()/2
     TiledMap_Load("map/map01.tmx")
 
     player = Petronius(spawn_point)
@@ -11,8 +11,6 @@ end
 
 function game:update(dt)
     player:update(dt)
-
-    gCamX = player.pos.x
 end
 
 function game:keypressed(key, code)
