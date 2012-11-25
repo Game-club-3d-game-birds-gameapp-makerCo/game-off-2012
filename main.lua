@@ -26,6 +26,7 @@ require "petronius"
 function love.load()
 
     love.graphics.setCaption( "The Door Into Summer" )
+    love.graphics.FilterMode = "nearest"
 
     Gamestate.registerEvents()
     Gamestate.switch(main_menu)

@@ -1,4 +1,5 @@
 --EVERYTHING IS A GLOBAL WAT
 
 gravity = 80
-spawn_point = vector(0,-67)
+pixel_scale = 4
+spawn_point = vector(love.graphics.getWidth() / (2 * pixel_scale), love.graphics.getHeight() / (2 * pixel_scale))

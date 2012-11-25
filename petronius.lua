@@ -37,6 +37,7 @@ Petronius.jump_force = 16
 Petronius.size = vector(32,32) --pixels
 
 Petronius.sprite_sheet = love.graphics.newImage("graphics/petronius/sprite sheet.png")
+Petronius.sprite_sheet:setFilter("nearest", "nearest")
 
 Petronius.animations = { 
     [ "idle" ] = newAnimation(Petronius.sprite_sheet, Petronius.size.x, Petronius.size.y, 0, 1) ,
@@ -110,5 +111,6 @@ end
 
 
 function Petronius:draw()
-	Petronius.animations[self.current_animation]:draw(self.pos.x, -self.pos.y)
+	Petronius.animations[self.current_animation]:draw(self.pos.x, self.pos.y, 0, 1, 1, Petronius.size.x/2, Petronius.size.y)
+    love.graphics.rectangle("line", self.pos.x-16, self.pos.y-32, 32, 32)
 end
