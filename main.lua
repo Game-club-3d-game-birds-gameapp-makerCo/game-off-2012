@@ -19,6 +19,10 @@ Class = require "libraries.hump.class"
 
 require "petronius"
 
+-- Graphics
+
+--require "libraries.AnAL"
+
 function love.load()
 
     love.graphics.setCaption( "The Door Into Summer" )

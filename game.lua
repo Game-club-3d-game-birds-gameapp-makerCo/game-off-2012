@@ -20,7 +20,7 @@ function game:draw()
     love.graphics.rectangle("fill", 0, window_size.x / 2, window_size.x, window_size.y / 2)
     love.graphics.translate(window_size.x / 2, window_size.y / 2) -- you don't need to understand this
     player:draw()
-    love.graphics.print("Is walking? " .. tostring(player.is_walking),0,-50)
+    love.graphics.print("Movement state: " .. tostring(player.movement_state),0,-50)
     love.graphics.print("Facing right? " .. tostring(player.is_facing_right),0,-30)
     love.graphics.print("X position: " .. player.pos.x,0,-10)
     love.graphics.print("X velocity: " .. player.velocity.x,0,10)

@@ -1,3 +1,5 @@
+require "libraries.AnAL"
+
 Petronius = Class { function( self, spawn_point, is_facing_right)
 
 	-- Physical attributes
@@ -7,13 +9,12 @@ Petronius = Class { function( self, spawn_point, is_facing_right)
 	-- State attributes
 
 	self.velocity = vector(0,0)
-	self.is_jumping = false
-    self.is_walking = false
+	self.movement_state = "idle"
     self.is_facing_right = is_facing_right or true -- It blows my mind that this might not be a tautology
 
 	-- Visual attributes
 
-	self.animation = "idle"
+	self.current_animation = "idle"
 
     -- Metaphyiscal attributes
     self.inputs = {}
@@ -33,36 +34,41 @@ Petronius.air_control_multiplier = 0.8 -- How much acceleration to apply when tr
 Petronius.jumping_gravity = 30 -- Weaker than actual gravity so jumping feels less like a jetpack
 Petronius.jump_force = 16
 
-Petronius.size = vector(64,64) --pixels
+Petronius.size = vector(32,32) --pixels
 
-Petronius.img = love.graphics.newImage("hamster.png")
+Petronius.sprite_sheet = love.graphics.newImage("graphics/petronius/sprite sheet.png")
+
+Petronius.animations = { 
+    [ "idle" ] = newAnimation(Petronius.sprite_sheet, Petronius.size.x, Petronius.size.y, 0, 1) ,
+    [ "walking" ] = newAnimation(Petronius.sprite_sheet, Petronius.size.x, Petronius.size.y, 0.25, 2) ,
+}
 
 function Petronius:update(dt)
 
     -- Count as walking when the player is holding left or right. Change position based on current velocity and update velocity accordingly
 
     if love.keyboard.isDown("right") then
-    	self.is_walking = true
+    	self.movement_state = "walking"
     	self.velocity.x = self.velocity.x + self.walk_acceleration * dt
     	self.pos.x = self.pos.x + self.velocity.x * dt
     elseif love.keyboard.isDown("left") then
-    	self.is_walking = true
+        self.movement_state = "walking"
         self.velocity.x = self.velocity.x - self.walk_acceleration * dt -- There *has* to be a more idiomatic way to write this
     	self.pos.x = self.pos.x + self.velocity.x * dt
     else
-    	self.is_walking = false
+        self.movement_state = "idle"
     end
 
     -- Update direction based on velocity, but only if we're walking
-    -- NOTE: This makes the assumption of there being no moving platforms
+    -- NOTE: This makes the assumption of there being no moving platforms. This will need to change once clones can be landed on.
 
-    if self.is_walking then
+    if self.current_state == "walking" then
         self.is_facing_right = self.velocity.x > 0
     end
 
     -- Slow the movement speed when we're not walking
 
-    if not self.is_walking then 
+    if self.movement_state == "idle" then 
     	self.velocity.x = self.velocity.x * Petronius.friction
     end
 
@@ -73,9 +79,14 @@ function Petronius:update(dt)
 
     if math.abs(self.velocity.x) > Petronius.stopping_speed then
     	self.pos.x = self.pos.x + self.velocity.x * dt
-    elseif not self.is_walking then
+    elseif self.movement_state == "idle" then
     	self.velocity.x = 0
     end
+
+    -- Update animations
+
+    self.current_animation = self.movement_state
+    Petronius.animations[self.current_animation]:update(dt)
 end
 
 function Petronius:keypressed(key)
@@ -99,5 +110,5 @@ end
 
 
 function Petronius:draw()
-	love.graphics.draw(Petronius.img, self.pos.x, -self.pos.y)
+	Petronius.animations[self.current_animation]:draw(self.pos.x, -self.pos.y)
 end
