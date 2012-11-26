@@ -119,5 +119,6 @@ end
 
 function Petronius:draw()
 	Petronius.animations[self.current_animation]:draw(self.pos.x, self.pos.y, 0, 1, 1, Petronius.size.x/2, Petronius.size.y)
-    love.graphics.rectangle("line", self.pos.x-16, self.pos.y-32, 32, 32)
+    love.graphics.setPoint(5, "smooth")
+    love.graphics.point(self.pos.x,self.pos.y)
 end
