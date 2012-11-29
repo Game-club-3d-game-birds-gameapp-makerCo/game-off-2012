@@ -1,4 +1,5 @@
 love.filesystem.load("libraries/map_loader.lua")()
+require "coordinates"
 
 function game:enter()
     gCamX,gCamY = love.graphics.getWidth()/2,love.graphics.getHeight()/2
@@ -32,4 +33,7 @@ function game:draw()
     love.graphics.print("Player position: ( " .. player.pos.x .. ", " .. player.pos.y .. ")" ,10,30)
     love.graphics.print("Facing right? " .. tostring(player.is_facing_right),10,50)
     love.graphics.print("Movement state: " .. tostring(player.movement_state),10,70)
+
+    local index = TiledMap_GetLayerZByName("main")
+    love.graphics.print("Tile id: " .. tostring(Coordinates:tile_at_pixels(player.pos.x, player.pos.y, index)),10,90)
 end
