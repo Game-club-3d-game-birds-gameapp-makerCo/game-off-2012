@@ -1,6 +1,10 @@
 vector = require "libraries.hump.vector"
 require "world_properties"
 
+-- Classes
+
+Class = require "libraries.hump.class"
+
 -- Game state system
 
 Gamestate = require "libraries.hump.gamestate"
@@ -10,10 +14,6 @@ require "menus"
 
 game = Gamestate.new()
 require "game"
-
--- Classes
-
-Class = require "libraries.hump.class"
 
 -- Entities
 
